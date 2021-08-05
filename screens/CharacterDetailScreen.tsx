@@ -25,6 +25,7 @@ export const CharacterDetailScreen = observer(({ navigation }: any) => {
     skin_color: string;
     gender: string;
   }
+  //neki errori jedanput dojdu pa pojdu, refresan i opt dojdu .....
   const {
     id,
     name,
