@@ -1,28 +1,59 @@
-import * as React from "react";
-import { NavigationContainer } from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
-import { HomeScreen } from "./screens/HomeScreen";
-import { QueryClientProvider, QueryClient } from "react-query";
-import { PokemonDetailsScreen } from "./screens/PokemonDetailsScreen";
-
-const Stack = createStackNavigator();
+import { QueryClient, QueryClientProvider, useQuery } from "react-query";
+import React from "react";
+import { Text, View } from "react-native";
+import { store } from "./Store";
+import { observer } from "mobx-react-lite";
 
 const queryClient = new QueryClient();
 
-function App() {
+export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <NavigationContainer>
-        <Stack.Navigator initialRouteName="Home">
-          <Stack.Screen name="Home" component={HomeScreen} />
-          <Stack.Screen
-            name="PokemonDetailsScreen"
-            component={PokemonDetailsScreen}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
+      <Example />
     </QueryClientProvider>
   );
 }
 
-export default App;
+const Example = observer(() => {
+  const { isLoading, isError, isIdle, data } = useQuery(
+    "repoData",
+    async () => {
+      const sacekaj = await store.fetchChars();
+      return sacekaj;
+    }
+  );
+
+  if (isError) {
+    return (
+      <View
+        style={{ padding: 32, alignItems: "center", justifyContent: "center" }}
+      >
+        <Text>Something went wrong :(</Text>
+      </View>
+    );
+  }
+  if (isLoading) {
+    return (
+      <View
+        style={{ padding: 32, alignItems: "center", justifyContent: "center" }}
+      >
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
+
+  if (isIdle) {
+    return null;
+  }
+
+  return (
+    <View>
+      <Text>yes</Text>
+      <View>
+        {data.map((e: any, i: number) => {
+          return <Text key={i}>{e.name}</Text>;
+        })}
+      </View>
+    </View>
+  );
+});
