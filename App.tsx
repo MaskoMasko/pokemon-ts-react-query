@@ -3,6 +3,7 @@ import React from "react";
 import { Text, View } from "react-native";
 import { store } from "./Store";
 import { observer } from "mobx-react-lite";
+import _ from "lodash";
 
 const queryClient = new QueryClient();
 
@@ -22,6 +23,7 @@ const Example = observer(() => {
       return sacekaj;
     }
   );
+  const charList = _.flatMap(data, (response: any) => response);
 
   if (isError) {
     return (
@@ -50,7 +52,7 @@ const Example = observer(() => {
     <View>
       <Text>yes</Text>
       <View>
-        {data.map((e: any, i: number) => {
+        {charList.map((e: any, i: number) => {
           return <Text key={i}>{e.name}</Text>;
         })}
       </View>
